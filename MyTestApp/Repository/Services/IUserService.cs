@@ -11,5 +11,7 @@ namespace MyTestApp.Repository.Services
         IEnumerable<User> GetAllUsers();
 
         public bool CheckUser(string name, string password);
+
+        public bool AddUser(string name, string login, string password);
     }
 }

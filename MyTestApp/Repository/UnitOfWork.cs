@@ -16,6 +16,9 @@ namespace MyTestApp.Repository
             _context = new AppDbContext();
         }
 
+        public void SaveChanges() {
+            _context.SaveChanges();
+        }
         public IUserService UserData() {
             return new UserService(_context);
         }

@@ -48,14 +48,41 @@ namespace MyTestApp.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost(nameof(Registration))]
+        public async Task<IActionResult> Registration([FromBody] UserRegistrationModel data)
+        {
+            IActionResult response = Unauthorized();
+
+            var log = data.Login.Contains("@mail");
+            
+            if (data != null && data.Password.Equals(data.PasswordConfirmation)&& log)
+            {
+
+                var user = _unit.UserData().AddUser(data.Name, data.Login, data.Password);
+                if (user == true)
+                {
+
+                    var tokenString = GenerateJSONWebToken();
+
+                    response = Ok(new { Token = tokenString, Message = "Success" });
+                    _unit.SaveChanges();
+                }
+                return response;
+            }
+            return response;
+        }
+
+
+        [AllowAnonymous]
         [HttpPost(nameof(Login))]
         public async Task<IActionResult> Login([FromBody] UserViewModel data)
         {
             IActionResult response = Unauthorized();
+            string login = data.Login.Substring(0,data.Login.Length-data.Login.IndexOf("@"));
             if (data != null)
             {
 
-                var user = _unit.UserData().CheckUser(data.Login, data.Password);
+                var user = _unit.UserData().CheckUser(login, data.Password);
                 if (user == true)
                 {
 
